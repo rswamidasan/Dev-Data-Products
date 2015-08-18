@@ -54,7 +54,7 @@ shinyUI(fluidPage(
                          tags$li("The reduction in the Standard Error of the Sample Mean diminishes
                                   as Sample Size increases.")))),
 
-            p(h5(a(href = "https://github.com/rswamidasan/Dev_Data_Products", target="_blank", "Source Code"))),
+            p(h5(a(href = "https://github.com/rswamidasan/Dev-Data-Products", target="_blank", "Source Code"))),
 
             actionButton("Exit", "Exit Gracefully", style = 'color:red'),
 
