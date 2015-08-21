@@ -42,22 +42,22 @@ pArt <- c(0.4, 0.1, 0.5)        # probability weights for elements in xArt
 Max_SS  <- 500      # Population
 Max_NS  <- 500      # Size
 
-SS  <- 25          # Sample Size
+SS  <- 30          # Sample Size
 NS  <- 30          # Number of Samples
 
-set.seed(1)
+set.seed(10)
 
 POP <- matrix(sample(xArt, Max_NS * Max_SS, replace = TRUE, prob = pArt), ncol = Max_SS)
 
 SMN <- apply(POP[1:NS, 1:SS], 1, mean)  # Calculate Mean of each Sample.
-SMX <- POP[1,1:SS]                      # take one sample
+SAM <- POP[1,1:SS]                      # take one sample
 
 mMu  <- round(mean(SMN), 2)         # Determine Mean and
 mVar <- round(var(SMN), 2)          # Variance of the Sample Means.
 mSE  <- round(sqrt(var(SMN)), 2)    # Std. Error of Sample Mean.
 
-sMu  <- round(mean(SMX), 2)         # Determine Mean and
-sVar <- round(var(SMX), 2)          # Variance of the one Sample.
+sMu  <- round(mean(SAM), 2)         # Determine Mean and
+sVar <- round(var(SAM), 2)          # Variance of the one Sample.
 
 pMu   <- sum(xArt * pArt)                       # Mean and Variance for
 pVar  <- round(sum((xArt - pMu)^2 * pArt), 2)   ## infinite population
@@ -67,10 +67,30 @@ cMu  <- pMu
 cVar <- round(pVar/SS, 2)
 cSE  <- round(sqrt(pVar/SS), 2)
 
+# for reference Population plot
+xPop  <- c(0, 0, 1, 1, 5, 5, 6, 6, 17, 17, 18, 18, 30)
+yPop  <- c(0, 0.4, 0.4, 0, 0, 0.1, 0.1, 0, 0, 0.5, 0.5, 0, 0)
+
+# calculate quintiles
+qM <- quantile(SMN, probs = c(0.25, 0.5, 0.75))
+qS <- quantile(SAM, probs = c(0.25, 0.5, 0.75))
+
+##  Text and location coordinate for Means of Samples plot
+mText <- c("mu", "Var", "SE *", "CLT Prediction", cMu, cVar, cSE,
+                                 "from Simulation", mMu, mVar, mSE,
+                                "* Standard Error of Sample Means")
+
+xMText <- c(20, 22, 24, 16, 20, 22, 24, 16, 20, 22, 24, 19)
+
+##  Text and location coordinate for Samples plot
+sText <- c("mu", "Var", "Sample", sMu, sVar, "Population *", pMu, pVar,
+                                                "* Infinite Population assumed")
+xSText <- c(22, 24, 20, 22, 24, 20, 22, 24, 22)
+
 ##  To scale the Y-axis of the plots
 # yM    <- hist(SMN, breaks = seq(0, 100, by = 1), plot = FALSE)
 # yMmax <- max(yM$density) * 1.25
-# yS    <- hist(SMX, breaks = seq(0, 100, by = 1), plot = FALSE)
+# yS    <- hist(SAM, breaks = seq(0, 100, by = 1), plot = FALSE)
 # ySmax <- max(yS$density) * 1.25
 
 yMmax <- 0.4; ySmax <- 0.6
@@ -79,30 +99,9 @@ yMmax <- 0.4; ySmax <- 0.6
 yMText <- c(rep(0.64*yMmax, 3), rep(0.58*yMmax, 4), rep(0.52*yMmax, 4), 0.46*yMmax)
 ySText <- c(rep(0.64*ySmax, 2), rep(0.58*ySmax, 3), rep(0.52*ySmax, 3), 0.46*ySmax)
 
-xPop  <- c(0, 0, 1, 1, 5, 5, 6, 6, 17, 17, 18, 18, 30)
-yPop  <- c(0, 0.4, 0.4, 0, 0, 0.1, 0.1, 0, 0, 0.5, 0.5, 0, 0)
-qN <- quantile(SMN, probs = c(0.25, 0.5, 0.75))
-qX <- quantile(SMX, probs = c(0.25, 0.5, 0.75))
-
-#lText <- c("mu", "Var", "CLT Prediction", tMu, tVar, "from Simulation", sMu, sVar)
-#xText <- c(22, 24, 18, 22, 24, 18, 22, 24)
-##  Text and location coordinate for Means of Samples plot
-mText <- c("mu", "Var", "SE *", "CLT Prediction", cMu, cVar, cSE,
-                                 "from Simulation", mMu, mVar, mSE,
-                                "* Standard Error of Sample Means")
-
-xMText <- c(20, 22, 24, 16, 20, 22, 24, 16, 20, 22, 24, 19)
-#yMText <- c(0.3, 0.3, 0.3, 0.25, 0.25, 0.25, 0.25, 0.2, 0.2, 0.2, 0.2, 0.15)
-
-##  Text and location coordinate for Samples plot
-sText <- c("mu", "Var", "Sample", sMu, sVar, "Population *", pMu, pVar,
-                                                "* Infinite Population assumed")
-xSText <- c(22, 24, 20, 22, 24, 20, 22, 24, 22)
-
-
-
 #yText <- c(rep(0.64*yNmax, 2), rep(0.58*yNmax, 3), rep(0.52*yNmax, 3))
 
+# Refernce Normal curve
 xSeq <- seq(0, 30, by = 0.5)
 yNorm <- dnorm(xSeq, mean = cMu, sd = sqrt(cVar))
 
@@ -115,14 +114,14 @@ type: sub-section
 ```{r, echo = FALSE, fig.height=7, fig.width=16}
 par(mfrow = c(1, 2))
 
-hist(SMX, breaks = seq(0, 100, by = 1), prob = TRUE,
+hist(SAM, breaks = seq(0, 100, by = 1), prob = TRUE,
             main = paste("Distribution of ", SS, " Random Artificials", sep = ""),
             col = "grey", border = "white", xlab = "Random Artificial Variables",
             lab.cex = 1.5, ylim = c(0, ySmax), xlim = c(0, 25))
 grid(col = "grey")
 lines(xPop, yPop, lty = 2, col = 139, lwd = 2)
-abline(v = mean(SMX), col = "black", lwd = 1)
-abline(v = qX, col = "orange", lwd = 1)
+abline(v = sMu, col = "black", lwd = 1)
+abline(v = qS, col = "orange", lwd = 1)
 legend('topright', c("Quartiles", "Mean", "Sample Density", "Population Density"), cex = 0.9,
         lty = c(1, 1, 1, 2), lwd = c(1, 1, 7, 2), col = c("orange", "black", "grey", 139))
 text(xSText, ySText, labels = sText, cex = 0.9)
@@ -134,8 +133,8 @@ hist(SMN, breaks = seq(0, 100, by = 1), prob = TRUE,
             xlab = "Sample Means", ylim = c(0, yMmax), xlim = c(0, 25))
 grid(col = "grey")
 lines(xSeq, yNorm, lty = 2, col = 139, lwd = 2)
-abline(v = sMu, col = "black", lwd = 1)
-abline(v = qN, col = "orange", lwd = 1)
+abline(v = mMu, col = "black", lwd = 1)
+abline(v = qM, col = "orange", lwd = 1)
 legend('topright', c("Quartiles", "Mean", "Sample Means Density",  "Normal Density"), cex = 0.9,
         lty = c(1, 1, 1, 2), lwd = c(1, 1, 7, 2), col=c("orange", "black", "grey", 139))
 text(xMText, yMText, labels = mText, cex = 0.9)
