@@ -152,10 +152,13 @@ shinyServer(function(input, output, session) {
         cVar <- round(pVar/SS, 2)
         cSE  <- round(sqrt(pVar/SS), 2)
 
+        mMax <- ceiling(max(SMN))
+        sMax <- ceiling(max(SAM))
+
         ##  To scale the Y-axis of the plots
-        yM    <- hist(SMN, breaks = seq(0, 100, by = 1), plot = FALSE)
+        yM    <- hist(SMN, breaks = seq(0, mMax, by = 1), plot = FALSE)
         yMmax <- max(yM$density) * 1.25
-        yS    <- hist(SAM, breaks = seq(0, 100, by = 1), plot = FALSE)
+        yS    <- hist(SAM, breaks = seq(0, sMax, by = 1), plot = FALSE)
         ySmax <- max(yS$density) * 1.25
 
         ##  Scaling the Y-axis requires scaling the y coordinates of the text
@@ -186,7 +189,7 @@ shinyServer(function(input, output, session) {
         par(mfrow = c(2, 1))
 
         ##  Plot the Means of the Samples
-        hist(SMN, breaks = seq(0, 100, by = 1), prob = TRUE,
+        hist(SMN, breaks = seq(0, mMax, by = 1), prob = TRUE,
             main = paste("Distribution of Means from ", NS,
                             " Samples of ", SS, " ", dName,"s", sep = ""),
             col = "light grey", border = "white", xlab = "Sample Means",
@@ -207,7 +210,7 @@ shinyServer(function(input, output, session) {
         text(xMText, yMText, labels = mText, cex = 0.9)
 
         ##  Plot a sample of the underlying distribution
-        hist(SAM, breaks = seq(0, 100, by = 1), prob = TRUE,
+        hist(SAM, breaks = seq(0, sMax, by = 1), prob = TRUE,
             main = paste("Distribution of ", SS, " Random ", dName, "s", sep = ""),
             col = "light grey", border = "white",
             xlab = paste("Random", dName, "Variables"),
